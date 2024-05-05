@@ -1,0 +1,20 @@
+{
+    "fiiis.error.norequest": "错误：没有待处理的请求或所有请求已过期。",
+    "fiiis.error.nondeath": "错误：找不到你上次死亡的位置。",
+    "fiiis.sent.tprequestpre": "向",
+    "fiiis.sent.tprequest": "发送了一个传送请求。",
+    "fiiis.recv.tprequestpreto": "",
+    "fiiis.recv.tprequestto": "想要传送到你这里。",
+    "fiiis.recv.tprequestprehere": "",
+    "fiiis.recv.tprequesthere": "想要你传送到他那里。",
+    "fiiis.hint.tpaccept": "输入/tpaccept以接受。",
+    "fiiis.hint.recoverpre": "使用",
+    "fiiis.hint.recover": "可以消耗此物品并将你传送到你上次死亡的位置。",
+    "fiiis.hint.recover.again": "十秒内再次点击以确认传送。",
+    "fiiis.warn.recover": "警告：死亡位置可能是不安全的，你应该在回去之前做好充分准备。",
+    "fiiis.suc.tpacceptedpre": "",
+    "fiiis.suc.tpaccepted": "接受了你的传送请求。",
+    "fiiis.suc.tpacceptpre": "你接受了",
+    "fiiis.suc.tpaccept": "的传送请求。",
+    "fiiis.suc.recover": "已将你传送到上次死亡的位置。"
+}

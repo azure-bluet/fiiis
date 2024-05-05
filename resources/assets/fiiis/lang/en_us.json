@@ -1,0 +1,20 @@
+{
+    "fiiis.error.norequest": "Error: No request was found or all requests have expired.",
+    "fiiis.error.nondeath": "Error: Cannot find your latest death location.",
+    "fiiis.sent.tprequestpre": "Sent a TP request to ",
+    "fiiis.sent.tprequest": ".",
+    "fiiis.recv.tprequestpreto": "",
+    "fiiis.recv.tprequestto": " wants to teleport to you. ",
+    "fiiis.recv.tprequestprehere": "",
+    "fiiis.recv.tprequesthere": " wants you to teleport to him. ",
+    "fiiis.hint.tpaccept": "Type /tpaccept to accept.",
+    "fiiis.hint.recoverpre": "Using ",
+    "fiiis.hint.recover": " consumes the item and brings you back to your latest death location.",
+    "fiiis.hint.recover.again": "Click the item again in 10 seconds to confirm.",
+    "fiiis.warn.recover": "Warning: the death location might be unsafe and you should be well prepared before going back.",
+    "fiiis.suc.tpacceptedpre": "",
+    "fiiis.suc.tpaccepted": " accepted your teleporting request.",
+    "fiiis.suc.tpacceptpre": "You accepted the teleporting request of",
+    "fiiis.suc.tpaccept": ".",
+    "fiiis.suc.recover": "Successfully teleported you back to your latest death location."
+}
