@@ -1,15 +1,18 @@
 package bluet.fiiis;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -27,13 +30,20 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CampfireBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
+import net.minecraftforge.event.level.BlockEvent.EntityPlaceEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod (FiiisMod.MOD_ID)
@@ -42,7 +52,8 @@ public class FiiisMod {
      * Fire-resist player drops;
      * Totem of undying Inventory Poping;
      * /tpa;
-     * Recovery recovery compass.
+     * Recovery recovery compass;
+     * Unlit campfires by default.
      * Requires client-side resource pack (e.g. through server.properties)
      */
     public static final String MOD_ID = "fiiis";
@@ -53,6 +64,9 @@ public class FiiisMod {
         bus.addListener (FiiisMod::regcmd);
         bus.addListener (FiiisMod::pop_totem);
         bus.addListener (FiiisMod::compass_click);
+        bus.addListener (FiiisMod::torchlit);
+        bus.addListener (FiiisMod::placeunlit);
+        bus.addListener (FiiisMod::unlitontick);
     }
     public static void unburn (LivingDropsEvent event) {
         if (event.getEntity () instanceof Player)
@@ -219,5 +233,37 @@ public class FiiisMod {
                 compassclick.remove (player);
             }
         }
+    }
+    // Now, when a campfire is placed, it is not lit.
+    public static void torchlit (RightClickBlock event) {
+        // Firstly the item must be a torch (flower?)
+        ItemStack stack = event.getItemStack ();
+        if (stack.is (Items.TORCH) || stack.is (Items.TORCHFLOWER)) {
+            var level = event.getLevel ();
+            var bs = level.getBlockState (event.getPos ());
+            if (bs.is (Blocks.CAMPFIRE)) {
+                if (bs.getValue (CampfireBlock.LIT) .booleanValue () == false) {
+                    stack.shrink (1);
+                    level.setBlockAndUpdate (event.getPos (), bs.setValue (CampfireBlock.LIT, true));
+                }
+            }
+        }
+    }
+    public static final Set <Pair <Level, BlockPos>> lit = new HashSet <> ();
+    public static void placeunlit (EntityPlaceEvent event) {
+        BlockState state = event.getPlacedBlock ();
+        if (event.getLevel () .isClientSide ()) return;
+        if (state.getBlock () == Blocks.CAMPFIRE && state.getValue (CampfireBlock.LIT) == true) {
+            // idk
+            lit.add (Pair.of ((Level) event.getLevel (), event.getPos ()));
+        }
+    }
+    public static void unlitontick (ServerTickEvent event) {
+        for (var pair : lit) {
+            Level level = pair.getFirst ();
+            BlockPos pos = pair.getSecond ();
+            level.setBlockAndUpdate (pos, level.getBlockState (pos) .setValue (CampfireBlock.LIT, false));
+        }
+        lit.clear ();
     }
 }
